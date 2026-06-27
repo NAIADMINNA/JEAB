@@ -17,7 +17,6 @@ import {
   ChevronRight, 
   AlertTriangle, 
   CheckCircle2, 
-  HelpCircle,
   Clock,
   ArrowRight,
   Info,
@@ -229,65 +228,105 @@ export default function App() {
 
   const totalPages = Math.ceil(filteredRows.length / itemsPerPage);
 
-  // Excel-friendly Thai CSV Export with UTF-8 BOM
-  const handleExportCSV = () => {
+  // Excel-friendly Thai HTML/XLS Export
+  const handleExportExcel = () => {
     if (!searchResult || !allData) return;
     
     const rowsToExport = searchType === 'employer' ? filteredRows : searchResult;
-    const csvContent = [
-      allData.headers.join(','),
-      ...rowsToExport.map(row => 
-        row.map(cell => {
-          const val = String(cell || '').replace(/"/g, '""');
-          return `"${val}"`;
-        }).join(',')
-      )
-    ].join('\n');
+    
+    // Construct HTML table content for Excel
+    const tableHeader = allData.headers.map(h => `<th style="background-color: #1e3a8a; color: #FFFFFF; font-weight: bold; border: 1px solid #CBD5E1; padding: 10px; font-size: 14px;">${h}</th>`).join('');
+    
+    const tableRows = rowsToExport.map(row => {
+      const cells = row.map(cell => {
+        const val = String(cell || '');
+        // We use mso-number-format:'\@' to prevent Excel from converting 13-digit numbers to scientific notation
+        return `<td style="border: 1px solid #CBD5E1; padding: 8px; font-size: 13px; mso-number-format:'\\@';">${val}</td>`;
+      }).join('');
+      return `<tr>${cells}</tr>`;
+    }).join('');
 
-    const blob = new Blob([new Uint8Array([0xEF, 0xBB, 0xBF]), csvContent], { type: 'text/csv;charset=utf-8;' });
+    const excelTemplate = `
+      <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+      <head>
+        <meta http-equiv="content-type" content="application/vnd.ms-excel; charset=UTF-8">
+        <!--[if gte mso 9]>
+        <xml>
+          <x:ExcelWorkbook>
+            <x:ExcelWorksheets>
+              <x:ExcelWorksheet>
+                <x:Name>eWorkPermit Export</x:Name>
+                <x:WorksheetOptions>
+                  <x:DisplayGridlines/>
+                </x:WorksheetOptions>
+              </x:ExcelWorksheet>
+            </x:ExcelWorksheets>
+          </x:ExcelWorkbook>
+        </xml>
+        <![endif]-->
+      </head>
+      <body style="font-family: 'Segoe UI', 'Tahoma', sans-serif;">
+        <table style="border-collapse: collapse;">
+          <thead>
+            <tr>${tableHeader}</tr>
+          </thead>
+          <tbody>
+            ${tableRows}
+          </tbody>
+        </table>
+      </body>
+      </html>
+    `;
+
+    const blob = new Blob([excelTemplate], { type: 'application/vnd.ms-excel;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.setAttribute("href", url);
-    link.setAttribute("download", `eworkpermit_export_${employerNumber || alienId || 'data'}.csv`);
+    link.setAttribute("download", `eworkpermit_export_${employerNumber || alienId || 'data'}.xls`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans selection:bg-blue-600 selection:text-white antialiased">
+    <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans selection:bg-blue-600 selection:text-white antialiased relative overflow-hidden">
       
+      {/* Ambient colorful background blobs */}
+      <div className="absolute top-[10%] left-[-15%] w-[600px] h-[600px] bg-gradient-to-tr from-blue-400/10 via-indigo-400/5 to-transparent rounded-full blur-[140px] pointer-events-none"></div>
+      <div className="absolute bottom-[20%] right-[-15%] w-[600px] h-[600px] bg-gradient-to-br from-emerald-400/10 via-teal-400/5 to-transparent rounded-full blur-[140px] pointer-events-none"></div>
+      <div className="absolute top-[50%] left-[30%] w-[500px] h-[500px] bg-gradient-to-r from-pink-300/5 to-amber-300/5 rounded-full blur-[120px] pointer-events-none"></div>
+
       {/* ENTERPRISE GLOW HEADER */}
-      <header className="sticky top-0 z-40 bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 border-b border-blue-900/60 shadow-xl overflow-hidden relative">
+      <header className="sticky top-0 z-40 bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 shadow-xl overflow-hidden relative">
         {/* Abstract vector decor circles */}
-        <div className="absolute top-0 right-0 w-80 h-40 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
-        <div className="absolute bottom-0 left-1/4 w-96 h-20 bg-emerald-500/5 rounded-full blur-2xl pointer-events-none"></div>
+        <div className="absolute top-0 right-0 w-80 h-40 bg-blue-500/15 rounded-full blur-3xl pointer-events-none"></div>
+        <div className="absolute bottom-0 left-1/4 w-96 h-20 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none"></div>
         
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 relative z-10">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4.5 relative z-10">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             
             {/* Logo area */}
             <div className="flex items-center gap-3.5">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shrink-0 shadow-lg border border-blue-400/40 relative">
-                <ShieldCheck className="w-6 h-6 text-white" />
-                <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5">
+              <div className="w-12.5 h-12.5 rounded-2xl bg-gradient-to-br from-blue-500 via-indigo-600 to-purple-600 flex items-center justify-center shrink-0 shadow-xl shadow-indigo-500/30 border border-blue-400/40 relative">
+                <ShieldCheck className="w-6.5 h-6.5 text-white" />
+                <span className="absolute -top-1 -right-1 flex h-4 w-4">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-emerald-500 border-2 border-slate-900"></span>
+                  <span className="relative inline-flex rounded-full h-4 w-4 bg-emerald-500 border-2 border-slate-900"></span>
                 </span>
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <h1 className="text-xl font-extrabold text-white tracking-tight leading-tight">
+                  <h1 className="text-xl md:text-2xl font-black text-white tracking-tight leading-tight bg-gradient-to-r from-white via-slate-100 to-blue-200 bg-clip-text text-transparent">
                     ระบบตรวจสอบสถานะข้อมูลแรงงานต่างด้าว
                   </h1>
                   <span className="hidden sm:inline-block px-2.5 py-0.5 rounded-full text-[10px] bg-blue-500/25 border border-blue-400/40 text-blue-300 font-bold uppercase tracking-wider">
                     eWorkPermit
                   </span>
                 </div>
-                <p className="text-xs text-slate-300 font-medium mt-1 tracking-wide flex items-center gap-1">
-                  <span>eWorkPermit Verification & Data Matching Platform</span>
+                <p className="text-xs text-slate-300 font-medium mt-1 tracking-wide flex items-center gap-1.5">
+                  <span className="text-blue-300 font-bold">eWorkPermit Verification & Data Matching Platform</span>
                   <span className="text-blue-400">•</span>
-                  <span className="text-emerald-400">กระทรวงแรงงาน</span>
+                  <span className="text-emerald-400 font-bold">สำนักบริหารแรงงานต่างด้าว</span>
                 </p>
               </div>
             </div>
@@ -295,19 +334,19 @@ export default function App() {
             {/* Right side live status & actions */}
             <div className="flex flex-col sm:flex-row sm:items-center gap-4 self-start md:self-center">
               {/* Real-time Ticking Clock */}
-              <div className="flex items-center gap-2 text-slate-300 text-xs font-semibold bg-slate-800/40 border border-slate-700/60 rounded-lg px-3 py-1.5">
-                <Clock className="w-4 h-4 text-blue-400 animate-pulse shrink-0" />
-                <span className="font-mono tracking-wide">
+              <div className="flex items-center gap-2 text-white text-xs font-bold bg-slate-800/80 border border-slate-700/80 rounded-xl px-3.5 py-2 shadow-sm">
+                <Clock className="w-4 h-4 text-cyan-400 animate-pulse shrink-0" />
+                <span className="font-mono tracking-wide bg-gradient-to-r from-cyan-300 to-blue-200 bg-clip-text text-transparent">
                   {formatThaiDateTime(currentTime)}
                 </span>
               </div>
 
-              <div className="bg-slate-800/80 border border-slate-700 rounded-lg px-3.5 py-1.5 flex items-center gap-2.5">
+              <div className="bg-slate-800/90 border border-slate-700 rounded-xl px-3.5 py-2 flex items-center gap-2.5 shadow-sm">
                 <span className="relative flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                 </span>
-                <span className="text-xs font-semibold text-slate-200">
+                <span className="text-xs font-bold text-emerald-400">
                   ฐานข้อมูลพร้อมใช้งาน
                 </span>
               </div>
@@ -315,7 +354,7 @@ export default function App() {
               {loadError && (
                 <button 
                   onClick={loadSheetData}
-                  className="bg-red-500/10 hover:bg-red-500/20 text-red-300 border border-red-500/40 text-xs px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 font-semibold"
+                  className="bg-red-500/20 hover:bg-red-500/30 text-red-200 border border-red-500/40 text-xs px-3.5 py-2 rounded-xl transition-all flex items-center gap-1.5 font-bold shadow-lg"
                 >
                   <WifiOff className="w-3.5 h-3.5" /> รีโหลดระบบ
                 </button>
@@ -324,53 +363,59 @@ export default function App() {
 
           </div>
         </div>
+        
+        {/* Dynamic color stripe at bottom of header */}
+        <div className="h-[3px] bg-gradient-to-r from-blue-500 via-indigo-500 via-purple-500 via-pink-500 to-emerald-500 w-full shrink-0"></div>
       </header>
 
       {/* MAIN LAYOUT */}
-      <main className="max-w-6xl w-full mx-auto px-4 sm:px-6 py-8 flex-grow flex flex-col gap-8">
+      <main className="max-w-6xl w-full mx-auto px-4 sm:px-6 py-8 flex-grow flex flex-col gap-8 relative z-10">
         
         {/* DUAL LOOKUP FORMS */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
           
           {/* INDIVIDUAL FORM (BLUE CARD) */}
-          <div className="relative rounded-2xl bg-white border border-slate-200 shadow-sm overflow-hidden transition-all duration-300 hover:shadow-md hover:border-blue-300/60 flex flex-col justify-between min-h-[310px]">
+          <div className="relative rounded-3xl bg-white border border-slate-200/80 shadow-md shadow-slate-100 overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/5 hover:border-blue-400/60 flex flex-col justify-between min-h-[320px]">
+            {/* Top accent color stripe */}
+            <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-blue-400 via-indigo-500 to-blue-600"></div>
+
             {/* Form Dim Lock Overlay */}
             {activeForm === 'employer' && (
-              <div className="absolute inset-0 bg-slate-100/90 backdrop-blur-[2px] z-20 flex flex-col items-center justify-center p-6 text-center transition-all duration-300">
-                <div className="w-12 h-12 rounded-full bg-slate-200 flex items-center justify-center mb-3">
-                  <Briefcase className="w-6 h-6 text-slate-500" />
+              <div className="absolute inset-0 bg-slate-50/95 backdrop-blur-[3px] z-20 flex flex-col items-center justify-center p-6 text-center transition-all duration-300">
+                <div className="w-14 h-14 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center mb-4 text-slate-500 shadow-sm">
+                  <Briefcase className="w-7 h-7" />
                 </div>
-                <h3 className="text-sm font-bold text-slate-700">กำลังสืบค้นแบบนิติบุคคล / นายจ้าง</h3>
-                <p className="text-xs text-slate-500 mt-1.5 max-w-[280px] leading-relaxed">
+                <h3 className="text-sm font-black text-slate-800">กำลังสืบค้นแบบนิติบุคคล / นายจ้าง</h3>
+                <p className="text-xs text-slate-500 mt-2 max-w-[300px] leading-relaxed font-medium">
                   ระบบจำกัดสิทธิ์การป้อนข้อมูลพร้อมกันเพื่อลดความสับสน กรุณากดปุ่มล้างค่าในฟอร์มนายจ้างก่อนทำการสลับประเภท
                 </p>
                 <button 
                   onClick={() => handleReset('employer')}
-                  className="mt-4 px-4 py-2 bg-slate-700 text-white rounded-lg text-xs font-bold hover:bg-slate-800 transition-colors flex items-center gap-1.5"
+                  className="mt-4.5 px-4 py-2.5 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-2 shadow-md active:scale-95"
                 >
                   <RotateCcw className="w-3.5 h-3.5" /> ล้างค่าฟอร์มนายจ้าง
                 </button>
               </div>
             )}
 
-            <div className="p-6">
-              <div className="flex items-center gap-3 mb-4 pb-3 border-b border-slate-100">
-                <div className="w-9 h-9 rounded-xl bg-blue-50 border border-blue-100 text-blue-700 flex items-center justify-center shrink-0">
-                  <UserCheck className="w-5 h-5" />
+            <div className="p-6 pt-7">
+              <div className="flex items-center gap-3.5 mb-4 pb-3 border-b border-slate-100">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white flex items-center justify-center shrink-0 shadow-md shadow-blue-500/20">
+                  <UserCheck className="w-5.5 h-5.5" />
                 </div>
                 <div>
-                  <h2 className="text-base font-bold text-slate-800">ค้นหาข้อมูลตามรายบุคคล</h2>
-                  <p className="text-[11px] text-slate-400 mt-0.5">Alien worker status lookup by individual ID</p>
+                  <h2 className="text-base font-extrabold text-slate-900">ค้นหาข้อมูลตามรายบุคคล</h2>
+                  <p className="text-[11px] text-blue-600 font-bold mt-0.5">Alien worker status lookup by individual ID</p>
                 </div>
               </div>
 
-              <p className="text-xs text-slate-500 mb-5 leading-relaxed">
-                กรอกเลขประจำตัวคนต่างด้าว 13 หลักเพื่อดึงรายการประวัติ เอกสาร และตรวจดูผลการดำเนินการจากระบบ eWorkPermit
+              <p className="text-xs text-slate-500 mb-5 leading-relaxed font-medium">
+                กรอกเลขประจำตัวคนต่างด้าว 13 หลักเพื่อดึงรายการผลการดำเนินการจากระบบแจ้งข้อมูลแรงงานต่างด้าว 4 สัญชาติ กรณีไม่พบข้อมูลในระบบ eWorkPermit.doe.go.th
               </p>
 
               <form onSubmit={(e) => { e.preventDefault(); performSearch('id'); }} className="space-y-4">
                 <div>
-                  <label htmlFor="alien-id-input" className="block text-xs font-bold text-slate-700 mb-1.5 tracking-wide">
+                  <label htmlFor="alien-id-input" className="block text-xs font-bold text-slate-700 mb-1.5 tracking-wide uppercase">
                     เลขประจำตัวคนต่างด้าว (13 หลัก)
                   </label>
                   <div className="relative">
@@ -382,9 +427,9 @@ export default function App() {
                       value={alienId}
                       onChange={(e) => handleAlienIdChange(e.target.value)}
                       placeholder="ระบุตัวเลข 13 หลัก เช่น 0xxxxxxxxxxxx"
-                      className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 pr-11 text-sm tracking-widest text-slate-900 transition-all focus:outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-100 placeholder:text-slate-400 placeholder:tracking-normal font-mono font-semibold"
+                      className="w-full rounded-2xl border-2 border-slate-200 bg-slate-50/50 px-4 py-3.5 pr-11 text-sm tracking-widest text-slate-900 transition-all focus:outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-100 placeholder:text-slate-400 placeholder:tracking-normal font-mono font-bold"
                     />
-                    <div className="absolute inset-y-0 right-4 flex items-center text-slate-400">
+                    <div className="absolute inset-y-0 right-4 flex items-center text-blue-500">
                       <IdCard className="w-5 h-5" />
                     </div>
                   </div>
@@ -395,7 +440,7 @@ export default function App() {
                     type="button"
                     onClick={() => handleReset('id')}
                     disabled={!alienId}
-                    className={`inline-flex items-center justify-center gap-1.5 rounded-xl px-4 py-3 text-xs font-bold border transition-colors ${
+                    className={`inline-flex items-center justify-center gap-1.5 rounded-2xl px-4 py-3.5 text-xs font-bold border transition-colors ${
                       alienId 
                         ? 'border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100' 
                         : 'border-slate-100 bg-slate-50/50 text-slate-400 cursor-not-allowed'
@@ -406,9 +451,9 @@ export default function App() {
                   <button
                     type="submit"
                     disabled={alienId.length !== 13 || isSearching}
-                    className={`inline-flex items-center justify-center gap-1.5 rounded-xl px-4 py-3 text-xs font-bold text-white transition-all shadow-sm ${
+                    className={`inline-flex items-center justify-center gap-1.5 rounded-2xl px-4 py-3.5 text-xs font-bold text-white transition-all shadow-md ${
                       alienId.length === 13 && !isSearching
-                        ? 'bg-blue-900 hover:bg-blue-950 active:scale-[0.98]' 
+                        ? 'bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 hover:from-blue-750 hover:to-indigo-750 hover:shadow-lg hover:shadow-blue-500/25 active:scale-[0.98]' 
                         : 'bg-blue-900/40 cursor-not-allowed shadow-none'
                     }`}
                   >
@@ -418,51 +463,54 @@ export default function App() {
               </form>
             </div>
 
-            <div className="bg-slate-50 border-t border-slate-100 py-3 px-6 flex items-center justify-between text-[11px] text-slate-400 font-medium">
-              <span>ประเภทข้อมูล: รายบุคคล (Individual)</span>
-              <span>รหัสเอกสาร: ท.ต. 4 สัญชาติ</span>
+            <div className="bg-slate-50/80 border-t border-slate-100 py-3.5 px-6 flex items-center justify-between text-[11px] text-slate-400 font-bold">
+              <span className="text-blue-600">ประเภทข้อมูล: รายบุคคล (Individual)</span>
+              <span>เลขประจำตัวแรงงานต่างด้าว</span>
             </div>
           </div>
 
           {/* EMPLOYER FORM (GREEN CARD) */}
-          <div className="relative rounded-2xl bg-white border border-slate-200 shadow-sm overflow-hidden transition-all duration-300 hover:shadow-md hover:border-emerald-300/60 flex flex-col justify-between min-h-[310px]">
+          <div className="relative rounded-3xl bg-white border border-slate-200/80 shadow-md shadow-slate-100 overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-emerald-500/5 hover:border-emerald-400/60 flex flex-col justify-between min-h-[320px]">
+            {/* Top accent color stripe */}
+            <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-emerald-400 via-teal-500 to-emerald-600"></div>
+
             {/* Form Dim Lock Overlay */}
             {activeForm === 'id' && (
-              <div className="absolute inset-0 bg-slate-100/90 backdrop-blur-[2px] z-20 flex flex-col items-center justify-center p-6 text-center transition-all duration-300">
-                <div className="w-12 h-12 rounded-full bg-slate-200 flex items-center justify-center mb-3">
-                  <UserCheck className="w-6 h-6 text-slate-500" />
+              <div className="absolute inset-0 bg-slate-50/95 backdrop-blur-[3px] z-20 flex flex-col items-center justify-center p-6 text-center transition-all duration-300">
+                <div className="w-14 h-14 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center mb-4 text-slate-500 shadow-sm">
+                  <UserCheck className="w-7 h-7" />
                 </div>
-                <h3 className="text-sm font-bold text-slate-700">กำลังสืบค้นแบบบุคคลต่างด้าว</h3>
-                <p className="text-xs text-slate-500 mt-1.5 max-w-[280px] leading-relaxed">
+                <h3 className="text-sm font-black text-slate-800">กำลังสืบค้นแบบบุคคลต่างด้าว</h3>
+                <p className="text-xs text-slate-500 mt-2 max-w-[300px] leading-relaxed font-medium">
                   ระบบจำกัดสิทธิ์การป้อนข้อมูลพร้อมกันเพื่อลดความสับสน กรุณากดปุ่มล้างค่าในฟอร์มรายบุคคลก่อนทำการสลับประเภท
                 </p>
                 <button 
                   onClick={() => handleReset('id')}
-                  className="mt-4 px-4 py-2 bg-slate-700 text-white rounded-lg text-xs font-bold hover:bg-slate-800 transition-colors flex items-center gap-1.5"
+                  className="mt-4.5 px-4 py-2.5 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-2 shadow-md active:scale-95"
                 >
                   <RotateCcw className="w-3.5 h-3.5" /> ล้างค่าฟอร์มรายบุคคล
                 </button>
               </div>
             )}
 
-            <div className="p-6">
-              <div className="flex items-center gap-3 mb-4 pb-3 border-b border-slate-100">
-                <div className="w-9 h-9 rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
-                  <Building2 className="w-5 h-5" />
+            <div className="p-6 pt-7">
+              <div className="flex items-center gap-3.5 mb-4 pb-3 border-b border-slate-100">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white flex items-center justify-center shrink-0 shadow-md shadow-emerald-500/20">
+                  <Building2 className="w-5.5 h-5.5" />
                 </div>
                 <div>
-                  <h2 className="text-base font-bold text-slate-800">ค้นหาข้อมูลตามสถานประกอบการ</h2>
-                  <p className="text-[11px] text-emerald-600/80 mt-0.5">Company or Employer master search</p>
+                  <h2 className="text-base font-extrabold text-slate-900">ค้นหาข้อมูลตามสถานประกอบการ</h2>
+                  <p className="text-[11px] text-emerald-600 font-bold mt-0.5">Company or Employer master search</p>
                 </div>
               </div>
 
-              <p className="text-xs text-slate-500 mb-5 leading-relaxed">
-                กรอกเลขทะเบียนนิติบุคคล หรือเลขนายจ้าง 13 หลัก เพื่อแสดงรายการคนต่างด้าวทั้งหมดภายใต้สังกัดและการแจ้งพิจารณา
+              <p className="text-xs text-slate-500 mb-5 leading-relaxed font-medium">
+                กรอกเลขทะเบียนนิติบุคคล หรือเลขนายจ้าง 13 หลัก เพื่อแสดงรายการคนต่างด้าวทั้งหมดภายใต้สังกัดเพื่อดึงรายการผลการดำเนินการจากระบบแจ้งข้อมูลแรงงานต่างด้าว 4 สัญชาติ กรณีไม่พบข้อมูลในระบบ eWorkPermit.doe.go.th
               </p>
 
               <form onSubmit={(e) => { e.preventDefault(); performSearch('employer'); }} className="space-y-4">
                 <div>
-                  <label htmlFor="employer-id-input" className="block text-xs font-bold text-slate-700 mb-1.5 tracking-wide">
+                  <label htmlFor="employer-id-input" className="block text-xs font-bold text-slate-700 mb-1.5 tracking-wide uppercase">
                     เลขทะเบียนนิติบุคคล / เลขนายจ้าง (13 หลัก)
                   </label>
                   <div className="relative">
@@ -474,9 +522,9 @@ export default function App() {
                       value={employerNumber}
                       onChange={(e) => handleEmployerIdChange(e.target.value)}
                       placeholder="ระบุตัวเลข 13 หลัก เช่น 0xxxxxxxxxxxx"
-                      className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 pr-11 text-sm tracking-widest text-slate-900 transition-all focus:outline-none focus:border-emerald-600 focus:ring-4 focus:ring-emerald-100 placeholder:text-slate-400 placeholder:tracking-normal font-mono font-semibold"
+                      className="w-full rounded-2xl border-2 border-slate-200 bg-slate-50/50 px-4 py-3.5 pr-11 text-sm tracking-widest text-slate-900 transition-all focus:outline-none focus:bg-white focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 placeholder:text-slate-400 placeholder:tracking-normal font-mono font-bold"
                     />
-                    <div className="absolute inset-y-0 right-4 flex items-center text-slate-400">
+                    <div className="absolute inset-y-0 right-4 flex items-center text-emerald-600">
                       <Briefcase className="w-5 h-5" />
                     </div>
                   </div>
@@ -487,7 +535,7 @@ export default function App() {
                     type="button"
                     onClick={() => handleReset('employer')}
                     disabled={!employerNumber}
-                    className={`inline-flex items-center justify-center gap-1.5 rounded-xl px-4 py-3 text-xs font-bold border transition-colors ${
+                    className={`inline-flex items-center justify-center gap-1.5 rounded-2xl px-4 py-3.5 text-xs font-bold border transition-colors ${
                       employerNumber 
                         ? 'border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100' 
                         : 'border-slate-100 bg-slate-50/50 text-slate-400 cursor-not-allowed'
@@ -498,9 +546,9 @@ export default function App() {
                   <button
                     type="submit"
                     disabled={employerNumber.length !== 13 || isSearching}
-                    className={`inline-flex items-center justify-center gap-1.5 rounded-xl px-4 py-3 text-xs font-bold text-white transition-all shadow-sm ${
+                    className={`inline-flex items-center justify-center gap-1.5 rounded-2xl px-4 py-3.5 text-xs font-bold text-white transition-all shadow-md ${
                       employerNumber.length === 13 && !isSearching
-                        ? 'bg-emerald-850 hover:bg-emerald-900 active:scale-[0.98]' 
+                        ? 'bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-700 hover:to-teal-700 hover:shadow-lg hover:shadow-emerald-500/25 active:scale-[0.98]' 
                         : 'bg-emerald-900/40 cursor-not-allowed shadow-none'
                     }`}
                   >
@@ -510,9 +558,8 @@ export default function App() {
               </form>
             </div>
 
-            <div className="bg-slate-50 border-t border-slate-100 py-3 px-6 flex items-center justify-between text-[11px] text-slate-400 font-medium">
+            <div className="bg-slate-50/80 border-t border-slate-100 py-3.5 px-6 flex items-center justify-between text-[11px] text-emerald-600 font-bold">
               <span>ประเภทข้อมูล: นายจ้าง (Employer)</span>
-              <span>ครอบคลุมแรงงาน: เมียนมา กัมพูชา ลาว เวียดนาม</span>
             </div>
           </div>
 
@@ -523,10 +570,10 @@ export default function App() {
           <motion.div 
             initial={{ opacity: 0, y: -5 }}
             animate={{ opacity: 1, y: 0 }}
-            className="p-4 bg-red-50 border border-red-200 rounded-xl flex items-center gap-3 text-red-700"
+            className="p-4.5 bg-red-50 border-2 border-red-200 rounded-2xl flex items-center gap-3 text-red-700 shadow-sm"
           >
-            <AlertCircle className="w-5 h-5 shrink-0" />
-            <p className="text-xs font-bold">{errorMsg}</p>
+            <AlertCircle className="w-5.5 h-5.5 shrink-0 text-red-600" />
+            <p className="text-xs font-black">{errorMsg}</p>
           </motion.div>
         )}
 
@@ -541,25 +588,26 @@ export default function App() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
-                className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm flex flex-col md:flex-row gap-6 items-start md:items-center"
+                className="bg-gradient-to-r from-blue-50/70 via-indigo-50/30 to-emerald-50/40 border border-indigo-100 rounded-3xl p-6.5 shadow-md shadow-indigo-900/5 flex flex-col md:flex-row gap-6 items-start md:items-center relative overflow-hidden"
               >
-                <div className="w-12 h-12 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center shrink-0">
-                  <Info className="w-6 h-6 text-blue-900" />
+                {/* Visual subtle glowing circles in guide state */}
+                <div className="absolute top-[-30%] right-[-10%] w-48 h-48 bg-indigo-200/20 rounded-full blur-2xl pointer-events-none"></div>
+                <div className="absolute bottom-[-30%] left-[-5%] w-48 h-48 bg-emerald-200/20 rounded-full blur-2xl pointer-events-none"></div>
+
+                <div className="w-12.5 h-12.5 rounded-2xl bg-gradient-to-br from-indigo-500 to-blue-600 text-white flex items-center justify-center shrink-0 shadow-lg shadow-indigo-500/30 relative">
+                  <Info className="w-6.5 h-6.5" />
                 </div>
-                <div className="flex-grow space-y-1">
-                  <h3 className="text-sm font-bold text-slate-800">ระบบสืบค้นสารบบเชื่อมต่อฐานข้อมูลคลาวด์แล้ว</h3>
-                  <p className="text-xs text-slate-500 leading-relaxed">
-                    กรุณาป้อนรหัส 13 หลักเพื่อดึงผลสรุปการประมวลผลและการยืนยันเอกสารตามสัญชาติ (กัมพูชา, ลาว, เมียนมา, เวียดนาม) ข้อมูลในระบบจะถูกซิงก์โดยตรงกับคลังสารสนเทศกลาง eWorkPermit
-                  </p>
+                <div className="flex-grow space-y-1.5 relative z-10">
+                  <h3 className="text-sm md:text-base font-black text-slate-950">ระบบตรวจสอบสถานะข้อมูลแรงงานต่างด้าว</h3>
                   <div className="pt-2 flex flex-wrap gap-2 text-[11px]">
-                    <span className="bg-slate-100 text-slate-600 px-2.5 py-0.5 rounded-full font-semibold">
-                      คัดกรองความผิดพลาดซ้ำซ้อนอัตโนมัติ
+                    <span className="bg-indigo-600/10 text-indigo-700 border border-indigo-200/50 px-3 py-1 rounded-full font-bold">
+                      🛡️ คัดกรองความผิดพลาดซ้ำซ้อนอัตโนมัติ
                     </span>
-                    <span className="bg-blue-50 text-blue-700 px-2.5 py-0.5 rounded-full font-semibold border border-blue-100">
-                      แสดงวันที่แบบพุทธศักราช (พ.ศ.)
+                    <span className="bg-blue-600/10 text-blue-700 border border-blue-200/50 px-3 py-1 rounded-full font-bold">
+                      📅 แสดงวันที่แบบพุทธศักราช (พ.ศ.)
                     </span>
-                    <span className="bg-emerald-50 text-emerald-700 px-2.5 py-0.5 rounded-full font-semibold border border-emerald-100">
-                      ส่งออก Excel-friendly CSV
+                    <span className="bg-emerald-600/10 text-emerald-700 border border-emerald-200/50 px-3 py-1 rounded-full font-bold">
+                      📊 ส่งออกไฟล์ Excel
                     </span>
                   </div>
                 </div>
@@ -573,15 +621,15 @@ export default function App() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm flex flex-col items-center justify-center text-center gap-4"
+                className="bg-white border-2 border-indigo-100 rounded-3xl p-10 shadow-lg flex flex-col items-center justify-center text-center gap-5"
               >
-                <div className="relative w-14 h-14">
+                <div className="relative w-16 h-16">
                   <div className="absolute inset-0 rounded-full border-4 border-slate-100"></div>
-                  <div className="absolute inset-0 rounded-full border-4 border-blue-900 border-t-transparent animate-spin"></div>
+                  <div className="absolute inset-0 rounded-full border-4 border-t-blue-600 border-r-indigo-500 border-b-purple-600 animate-spin"></div>
                 </div>
                 <div>
-                  <h3 className="text-sm font-extrabold text-slate-800">กำลังสแกนโครงข่ายคลาวด์ eWorkPermit...</h3>
-                  <p className="text-xs text-slate-400 mt-1">กำลังจัดระเบียบและแมทชิ่งชุดรหัสประวัติ 13 หลัก โปรดรอสักครู่</p>
+                  <h3 className="text-base font-black text-slate-950">กำลังสแกนโครงข่ายคลาวด์ eWorkPermit...</h3>
+                  <p className="text-xs text-slate-500 mt-1 font-semibold">กำลังจัดระเบียบและแมทชิ่งชุดรหัสประวัติ 13 หลัก โปรดรอสักครู่</p>
                 </div>
               </motion.div>
             )}
@@ -597,16 +645,16 @@ export default function App() {
               >
                 
                 {/* Result Control Bar */}
-                <div className="bg-white border border-slate-200 rounded-2xl px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center shrink-0">
-                      <FileText className="w-5 h-5 text-blue-900" />
+                <div className="bg-gradient-to-r from-slate-900 to-blue-950 border border-blue-900/60 rounded-3xl px-6 py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xl">
+                  <div className="flex items-center gap-3.5">
+                    <div className="w-11 h-11 rounded-xl bg-blue-500/20 border border-blue-400/40 text-blue-200 flex items-center justify-center shrink-0">
+                      <FileText className="w-5.5 h-5.5" />
                     </div>
                     <div>
-                      <h2 className="text-sm font-extrabold text-slate-800">
+                      <h2 className="text-sm md:text-base font-black text-white tracking-tight leading-tight">
                         {searchType === 'id' ? 'ผลการตรวจสอบข้อมูลรายบุคคล' : 'รายการแรงงานในสถานประกอบการ'}
                       </h2>
-                      <p className="text-xs text-slate-400 font-medium mt-0.5">
+                      <p className="text-xs text-slate-300 font-semibold mt-0.5">
                         {searchType === 'id' 
                           ? `หมายเลขแรงงาน: ${alienId}` 
                           : `รหัสบริษัทนายจ้าง: ${employerNumber} (พบทั้งหมด ${searchResult.length} รายการ)`
@@ -616,19 +664,19 @@ export default function App() {
                   </div>
 
                   <div className="flex flex-wrap items-center gap-2">
-                    {/* CSV Export Button (Only if we have results) */}
+                    {/* Excel Export Button (Only if we have results) */}
                     {searchResult.length > 0 && (
                       <button
-                        onClick={handleExportCSV}
-                        className="inline-flex items-center gap-2 bg-emerald-50 text-emerald-800 hover:bg-emerald-100 border border-emerald-200 rounded-xl px-4 py-2 text-xs font-bold transition-all shadow-sm active:scale-[0.98]"
+                        onClick={handleExportExcel}
+                        className="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 hover:from-emerald-600 hover:to-teal-600 hover:shadow-lg hover:shadow-emerald-500/20 text-white rounded-2xl px-5 py-2.5 text-xs font-bold transition-all active:scale-[0.98]"
                       >
-                        <Download className="w-4 h-4" /> ส่งออกเป็นไฟล์ CSV
+                        <Download className="w-4 h-4" /> ส่งออกเป็นไฟล์ Excel
                       </button>
                     )}
                     
                     <button
                       onClick={() => handleReset(searchType)}
-                      className="inline-flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl px-4 py-2 text-xs font-bold transition-all"
+                      className="inline-flex items-center gap-1.5 bg-white/10 hover:bg-white/20 border border-white/15 text-white rounded-2xl px-5 py-2.5 text-xs font-bold transition-all"
                     >
                       <RotateCcw className="w-3.5 h-3.5" /> รีเซ็ตการค้นหา
                     </button>
@@ -652,20 +700,23 @@ export default function App() {
 
                 {/* VIEW INDIVIDUAL CARD RESULTS */}
                 {searchType === 'id' && searchResult.length > 0 && (
-                  <div className="flex flex-col gap-5 w-full">
+                  <div className="flex flex-col gap-6 w-full">
                     {searchResult.map((record, recIdx) => (
                       <div 
                         key={recIdx} 
-                        className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-md hover:border-slate-300 transition-all"
+                        className="bg-white border border-slate-200/80 rounded-3xl overflow-hidden shadow-md hover:shadow-xl hover:border-blue-400/50 transition-all duration-300 relative"
                       >
+                        {/* Decorative colorful side bar */}
+                        <div className="absolute left-0 top-0 bottom-0 w-2 bg-gradient-to-b from-blue-500 via-indigo-500 to-purple-600"></div>
+
                         {/* Record Title Header */}
-                        <div className="bg-slate-50 border-b border-slate-100 py-3.5 px-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                          <span className="text-xs font-extrabold text-blue-900 tracking-wide flex items-center gap-1.5">
-                            <History className="w-4 h-4 text-slate-500" /> 
+                        <div className="bg-slate-50/80 border-b border-slate-100 py-4.5 px-7 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                          <span className="text-xs font-black text-blue-900 tracking-wide flex items-center gap-2">
+                            <History className="w-4.5 h-4.5 text-blue-600" /> 
                             ระเบียนข้อมูลที่ {recIdx + 1}
                           </span>
-                          <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 border border-emerald-200 bg-emerald-50 text-emerald-800 text-[11px] font-bold">
-                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> 
+                          <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 border-2 border-emerald-200 bg-emerald-50 text-emerald-800 text-[11px] font-extrabold shadow-sm">
+                            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> 
                             ประมวลผลสำเร็จ
                           </span>
                         </div>
@@ -684,48 +735,48 @@ export default function App() {
                             const isDuplicate = cellVal.includes('⚠️ เลขต่างด้าวซ้ำ') || cellVal.includes('ซ้ำ');
                             const isNew = cellVal.includes('✅ ข้อมูลใหม่') || cellVal.includes('ใหม่') || cellVal.includes('สำเร็จ');
                             
-                            let alertBg = "bg-blue-50/70 border-blue-100 text-blue-900";
-                            let icon = <Info className="w-5 h-5 text-blue-600 shrink-0" />;
-                            let badgeStyle = "bg-blue-600 text-white";
+                            let alertBg = "bg-gradient-to-r from-blue-50 to-indigo-50/40 border-blue-200/60 text-blue-900";
+                            let icon = <Info className="w-5.5 h-5.5 text-blue-600 shrink-0" />;
+                            let badgeStyle = "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md shadow-blue-500/20";
                             let descriptionText = "ระบบได้ทำการตรวจสอบข้อมูลเบื้องต้นเรียบร้อยแล้ว";
 
                             if (isDuplicate) {
-                              alertBg = "bg-red-50/80 border-red-200 text-red-900";
-                              icon = <AlertTriangle className="w-5.5 h-5.5 text-red-600 shrink-0 animate-bounce" />;
-                              badgeStyle = "bg-red-600 text-white animate-pulse";
-                              descriptionText = "คำเตือน: ตรวจพบชุดข้อมูลที่มีเลขประจำตัวแรงงานต่างด้าวซ้ำซ้อนในระบบฐานข้อมูลสารบบ eWorkPermit กรุณาตรวจสอบเอกสารแนบ";
+                                alertBg = "bg-gradient-to-r from-red-50 to-rose-50/40 border-red-200/60 text-red-900";
+                                icon = <AlertTriangle className="w-6 h-6 text-red-600 shrink-0 animate-bounce" />;
+                                badgeStyle = "bg-gradient-to-r from-red-600 to-rose-600 text-white shadow-md shadow-red-500/20 animate-pulse";
+                                descriptionText = "คำเตือน: ตรวจพบชุดข้อมูลที่มีเลขประจำตัวแรงงานต่างด้าวซ้ำซ้อนในระบบฐานข้อมูลสารบบ eWorkPermit กรุณาตรวจสอบเอกสารแนบ";
                             } else if (isNew) {
-                              alertBg = "bg-emerald-50/80 border-emerald-200 text-emerald-950";
-                              icon = <CheckCircle2 className="w-5.5 h-5.5 text-emerald-600 shrink-0" />;
-                              badgeStyle = "bg-emerald-600 text-white";
-                              descriptionText = "ข้อมูลใหม่ผ่านการพิจารณาตรวจสอบความถูกต้องและขึ้นทะเบียนเข้าระบบเรียบร้อย";
+                                alertBg = "bg-gradient-to-r from-emerald-50 to-teal-50/40 border-emerald-200/60 text-emerald-950";
+                                icon = <CheckCircle2 className="w-6 h-6 text-emerald-600 shrink-0" />;
+                                badgeStyle = "bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-md shadow-emerald-500/20";
+                                descriptionText = "ข้อมูลใหม่ผ่านการพิจารณาตรวจสอบความถูกต้องและขึ้นทะเบียนเข้าระบบเรียบร้อย";
                             } else if (cellVal.includes('รอ') || cellVal.includes('พิจารณา')) {
-                              alertBg = "bg-amber-50/80 border-amber-200 text-amber-950";
-                              icon = <Clock className="w-5.5 h-5.5 text-amber-650 shrink-0" />;
-                              badgeStyle = "bg-amber-600 text-white";
-                              descriptionText = "เอกสารอยู่ระหว่างกระบวนการตรวจสอบและพิจารณาความสมบูรณ์โดยเจ้าหน้าที่ฝ่ายทะเบียน";
+                                alertBg = "bg-gradient-to-r from-amber-50 to-orange-50/40 border-amber-200/60 text-amber-950";
+                                icon = <Clock className="w-6 h-6 text-amber-600 shrink-0" />;
+                                badgeStyle = "bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-md shadow-amber-500/20";
+                                descriptionText = "เอกสารอยู่ระหว่างกระบวนการตรวจสอบและพิจารณาความสมบูรณ์โดยเจ้าหน้าที่ฝ่ายทะเบียน";
                             }
 
                             return (
-                              <div className={`mx-6 mt-5 p-5 rounded-2xl border ${alertBg} flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-sm`}>
+                              <div className={`mx-7 mt-6 p-5 rounded-2xl border ${alertBg} flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-sm`}>
                                 <div className="flex items-start md:items-center gap-3.5">
-                                  <div className="p-2.5 bg-white rounded-xl shadow-xs shrink-0 flex items-center justify-center">
+                                  <div className="p-2.5 bg-white rounded-xl shadow-sm shrink-0 flex items-center justify-center border border-slate-100">
                                     {icon}
                                   </div>
                                   <div>
-                                    <span className="text-[10px] font-bold uppercase tracking-wider opacity-60 block">
+                                    <span className="text-[10px] font-extrabold uppercase tracking-wider opacity-60 block">
                                       {labelText} (Latest Operation Status)
                                     </span>
-                                    <h4 className="text-base font-extrabold mt-0.5 tracking-tight">
+                                    <h4 className="text-base font-black mt-0.5 tracking-tight">
                                       {cellVal}
                                     </h4>
-                                    <p className="text-xs opacity-85 mt-1 leading-relaxed font-medium">
+                                    <p className="text-xs opacity-90 mt-1 leading-relaxed font-semibold">
                                       {descriptionText}
                                     </p>
                                   </div>
                                 </div>
                                 <div className="self-start md:self-center shrink-0">
-                                  <span className={`inline-flex px-3.5 py-1.5 text-xs font-bold rounded-xl shadow-xs uppercase tracking-wide ${badgeStyle}`}>
+                                  <span className={`inline-flex px-3.5 py-2 text-xs font-black rounded-xl uppercase tracking-wide ${badgeStyle}`}>
                                     สถานะการดำเนินการ
                                   </span>
                                 </div>
@@ -736,7 +787,7 @@ export default function App() {
                         })()}
 
                         {/* Fields Grid */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0 mt-5 px-7 pb-6">
                           {allData?.headers.map((header, headIdx) => {
                             const labelText = header && header.trim() ? header.trim() : `ข้อมูลช่องที่ ${headIdx + 1}`;
                             let cellVal = record[headIdx] && record[headIdx].trim() ? record[headIdx].trim() : '-';
@@ -998,48 +1049,7 @@ export default function App() {
           </AnimatePresence>
         </section>
 
-        {/* GUIDES AND COLLAPSIBLE ACCORDIONS */}
-        <section className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
-          <div className="flex items-center gap-2.5 mb-4 pb-2 border-b border-slate-100">
-            <HelpCircle className="w-5 h-5 text-blue-900" />
-            <h3 className="text-sm font-extrabold text-slate-800">คู่มือและคำแนะนำในการสืบค้นข้อมูล</h3>
-          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 text-xs text-slate-600">
-            
-            <div className="space-y-1.5">
-              <h4 className="font-bold text-slate-800 flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-blue-500"></span>
-                การตรวจสอบตามรายบุคคล
-              </h4>
-              <p className="leading-relaxed pl-3.5 text-slate-500">
-                ระบุเลขประจำตัวคนต่างด้าว 13 หลักที่ขึ้นต้นด้วยรหัสสัญชาติตามเอกสารทางการ เพื่อดึงผลตรวจของแต่ละคนและระเบียนประวัติทีละรายการอย่างรวดเร็ว
-              </p>
-            </div>
-
-            <div className="space-y-1.5">
-              <h4 className="font-bold text-slate-800 flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-                การตรวจสอบตามสถานประกอบการ
-              </h4>
-              <p className="leading-relaxed pl-3.5 text-slate-500">
-                ระบุเลขนายจ้างนิติบุคคล 13 หลักของบริษัทเพื่อเรียกดูตารางสรุปคนต่างด้าวทั้งหมดภายใต้บริษัทนั้นๆ ระบบสนับสนุนการค้นหาและฟิลเตอร์ย่อยในตารางได้ทันที
-              </p>
-            </div>
-
-            <div className="space-y-1.5">
-              <h4 className="font-bold text-slate-800 flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-amber-500"></span>
-                รหัสความหมายของสถานะ
-              </h4>
-              <p className="leading-relaxed pl-3.5 text-slate-500">
-                <span className="text-emerald-700 font-semibold bg-emerald-50 px-1 py-0.5 rounded border border-emerald-100 text-[10px]">✅ ข้อมูลใหม่</span> คือ ยื่นประวัติใหม่สมบูรณ์ <br />
-                <span className="text-red-700 font-semibold bg-red-50 px-1 py-0.5 rounded border border-red-100 text-[10px]">⚠️ เลขต่างด้าวซ้ำ</span> คือ ตรวจสอบรหัสประวัติซ้ำซ้อนในฐานระบบ
-              </p>
-            </div>
-
-          </div>
-        </section>
 
       </main>
 
@@ -1048,12 +1058,6 @@ export default function App() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col md:flex-row items-center justify-between gap-6">
           
           <div className="text-center md:text-left space-y-1">
-            <p className="text-xs font-bold text-slate-300 tracking-wider uppercase">
-              eWorkPermit Processing Log and Verification Gateway Node
-            </p>
-            <p className="text-[11px] text-slate-500 leading-relaxed">
-              สืบค้น ตรวจสอบความถูกต้อง และจัดพิมพ์ข้อมูลสารบัญสำหรับแรงงานต่างด้าว 4 สัญชาติ ยื่นคำขอ eWorkPermit
-            </p>
           </div>
 
           <div className="flex flex-col items-center md:items-end gap-2 text-[10px] text-slate-500">
