@@ -293,7 +293,15 @@ export default function App() {
             </div>
 
             {/* Right side live status & actions */}
-            <div className="flex items-center gap-3 self-start md:self-center">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4 self-start md:self-center">
+              {/* Real-time Ticking Clock */}
+              <div className="flex items-center gap-2 text-slate-300 text-xs font-semibold bg-slate-800/40 border border-slate-700/60 rounded-lg px-3 py-1.5">
+                <Clock className="w-4 h-4 text-blue-400 animate-pulse shrink-0" />
+                <span className="font-mono tracking-wide">
+                  {formatThaiDateTime(currentTime)}
+                </span>
+              </div>
+
               <div className="bg-slate-800/80 border border-slate-700 rounded-lg px-3.5 py-1.5 flex items-center gap-2.5">
                 <span className="relative flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
@@ -317,116 +325,6 @@ export default function App() {
           </div>
         </div>
       </header>
-
-      {/* DASHBOARD STATISTICS HERO SECTION */}
-      <section className="bg-slate-900 border-b border-slate-800 text-white relative py-6">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6">
-          
-          {/* Real-time Ticking Clock */}
-          <div className="flex items-center gap-2 text-slate-400 text-xs font-medium mb-4">
-            <Clock className="w-4 h-4 text-blue-400 animate-pulse" />
-            <span className="font-mono tracking-wide">
-              {formatThaiDateTime(currentTime)}
-            </span>
-          </div>
-
-          <AnimatePresence mode="wait">
-            {isLoadingData ? (
-              // Loading Stats Skeleton
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                {[1, 2, 3, 4].map((i) => (
-                  <div key={i} className="bg-slate-800/40 border border-slate-800 rounded-xl p-4 animate-pulse">
-                    <div className="h-4 bg-slate-700 rounded w-1/2 mb-3"></div>
-                    <div className="h-8 bg-slate-700 rounded w-3/4"></div>
-                  </div>
-                ))}
-              </div>
-            ) : loadError ? (
-              // Error Alert
-              <div className="bg-red-950/40 border border-red-900/60 rounded-xl p-4 flex items-center gap-3.5">
-                <AlertCircle className="w-6 h-6 text-red-400 shrink-0" />
-                <div>
-                  <h3 className="text-sm font-bold text-red-200">ไม่สามารถโหลดฐานข้อมูลกลางได้</h3>
-                  <p className="text-xs text-red-300/80 mt-0.5">เกิดปัญหาขัดข้องชั่วคราวในการเข้าถึงข้อมูลพอร์ทัลของ Google Sheets โปรดกดปุ่ม "รีโหลดระบบ" ด้านบนเพื่อลองใหม่อีกครั้ง</p>
-                </div>
-              </div>
-            ) : stats ? (
-              // Real computed stats cards
-              <motion.div 
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="grid grid-cols-2 lg:grid-cols-4 gap-4"
-              >
-                {/* Stat 1 */}
-                <div className="bg-slate-800/55 border border-slate-700/60 rounded-xl p-4 shadow-sm hover:border-blue-500/40 transition-colors">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs font-semibold text-slate-400 tracking-wide">
-                      แรงงานในระบบทั้งหมด
-                    </span>
-                    <Database className="w-4.5 h-4.5 text-blue-400" />
-                  </div>
-                  <div className="flex items-baseline gap-1.5">
-                    <span className="text-2xl font-extrabold tracking-tight text-white font-mono">
-                      {stats.totalRecords.toLocaleString()}
-                    </span>
-                    <span className="text-xs text-slate-400 font-medium">คน</span>
-                  </div>
-                </div>
-
-                {/* Stat 2 */}
-                <div className="bg-slate-800/55 border border-slate-700/60 rounded-xl p-4 shadow-sm hover:border-emerald-500/40 transition-colors">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs font-semibold text-slate-400 tracking-wide">
-                      นายจ้าง / นิติบุคคล
-                    </span>
-                    <Briefcase className="w-4.5 h-4.5 text-emerald-400" />
-                  </div>
-                  <div className="flex items-baseline gap-1.5">
-                    <span className="text-2xl font-extrabold tracking-tight text-white font-mono">
-                      {stats.totalEmployers.toLocaleString()}
-                    </span>
-                    <span className="text-xs text-slate-400 font-medium">แห่ง</span>
-                  </div>
-                </div>
-
-                {/* Stat 3 */}
-                <div className="bg-slate-800/55 border border-slate-700/60 rounded-xl p-4 shadow-sm hover:border-red-500/40 transition-colors">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs font-semibold text-slate-400 tracking-wide">
-                      ตรวจพบเอกสารซ้ำซ้อน
-                    </span>
-                    <AlertTriangle className="w-4.5 h-4.5 text-red-400" />
-                  </div>
-                  <div className="flex items-baseline gap-1.5">
-                    <span className="text-2xl font-extrabold tracking-tight text-red-400 font-mono">
-                      {stats.duplicateCount.toLocaleString()}
-                    </span>
-                    <span className="text-xs text-slate-400 font-medium">รายการ</span>
-                  </div>
-                </div>
-
-                {/* Stat 4 */}
-                <div className="bg-slate-800/55 border border-slate-700/60 rounded-xl p-4 shadow-sm hover:border-blue-400/40 transition-colors">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs font-semibold text-slate-400 tracking-wide">
-                      รายการยื่นใหม่ยันยืนแล้ว
-                    </span>
-                    <CheckCircle2 className="w-4.5 h-4.5 text-blue-400" />
-                  </div>
-                  <div className="flex items-baseline gap-1.5">
-                    <span className="text-2xl font-extrabold tracking-tight text-emerald-400 font-mono">
-                      {stats.newCount.toLocaleString()}
-                    </span>
-                    <span className="text-xs text-slate-400 font-medium">รายการ</span>
-                  </div>
-                </div>
-
-              </motion.div>
-            ) : null}
-          </AnimatePresence>
-
-        </div>
-      </section>
 
       {/* MAIN LAYOUT */}
       <main className="max-w-6xl w-full mx-auto px-4 sm:px-6 py-8 flex-grow flex flex-col gap-8">
@@ -772,6 +670,71 @@ export default function App() {
                           </span>
                         </div>
 
+                        {/* HERO STATUS BANNER */}
+                        {(() => {
+                          const statusIdx = allData?.headers.findIndex(header => {
+                            const label = (header || '').toLowerCase();
+                            return label.includes('ผลการดำเนินการ') || label.includes('result') || label.includes('status') || label.includes('สถานะ');
+                          });
+
+                          if (statusIdx !== undefined && statusIdx !== -1) {
+                            const labelText = allData?.headers[statusIdx] || 'ผลการดำเนินการ';
+                            const cellVal = (record[statusIdx] || '').trim();
+                            
+                            const isDuplicate = cellVal.includes('⚠️ เลขต่างด้าวซ้ำ') || cellVal.includes('ซ้ำ');
+                            const isNew = cellVal.includes('✅ ข้อมูลใหม่') || cellVal.includes('ใหม่') || cellVal.includes('สำเร็จ');
+                            
+                            let alertBg = "bg-blue-50/70 border-blue-100 text-blue-900";
+                            let icon = <Info className="w-5 h-5 text-blue-600 shrink-0" />;
+                            let badgeStyle = "bg-blue-600 text-white";
+                            let descriptionText = "ระบบได้ทำการตรวจสอบข้อมูลเบื้องต้นเรียบร้อยแล้ว";
+
+                            if (isDuplicate) {
+                              alertBg = "bg-red-50/80 border-red-200 text-red-900";
+                              icon = <AlertTriangle className="w-5.5 h-5.5 text-red-600 shrink-0 animate-bounce" />;
+                              badgeStyle = "bg-red-600 text-white animate-pulse";
+                              descriptionText = "คำเตือน: ตรวจพบชุดข้อมูลที่มีเลขประจำตัวแรงงานต่างด้าวซ้ำซ้อนในระบบฐานข้อมูลสารบบ eWorkPermit กรุณาตรวจสอบเอกสารแนบ";
+                            } else if (isNew) {
+                              alertBg = "bg-emerald-50/80 border-emerald-200 text-emerald-950";
+                              icon = <CheckCircle2 className="w-5.5 h-5.5 text-emerald-600 shrink-0" />;
+                              badgeStyle = "bg-emerald-600 text-white";
+                              descriptionText = "ข้อมูลใหม่ผ่านการพิจารณาตรวจสอบความถูกต้องและขึ้นทะเบียนเข้าระบบเรียบร้อย";
+                            } else if (cellVal.includes('รอ') || cellVal.includes('พิจารณา')) {
+                              alertBg = "bg-amber-50/80 border-amber-200 text-amber-950";
+                              icon = <Clock className="w-5.5 h-5.5 text-amber-650 shrink-0" />;
+                              badgeStyle = "bg-amber-600 text-white";
+                              descriptionText = "เอกสารอยู่ระหว่างกระบวนการตรวจสอบและพิจารณาความสมบูรณ์โดยเจ้าหน้าที่ฝ่ายทะเบียน";
+                            }
+
+                            return (
+                              <div className={`mx-6 mt-5 p-5 rounded-2xl border ${alertBg} flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-sm`}>
+                                <div className="flex items-start md:items-center gap-3.5">
+                                  <div className="p-2.5 bg-white rounded-xl shadow-xs shrink-0 flex items-center justify-center">
+                                    {icon}
+                                  </div>
+                                  <div>
+                                    <span className="text-[10px] font-bold uppercase tracking-wider opacity-60 block">
+                                      {labelText} (Latest Operation Status)
+                                    </span>
+                                    <h4 className="text-base font-extrabold mt-0.5 tracking-tight">
+                                      {cellVal}
+                                    </h4>
+                                    <p className="text-xs opacity-85 mt-1 leading-relaxed font-medium">
+                                      {descriptionText}
+                                    </p>
+                                  </div>
+                                </div>
+                                <div className="self-start md:self-center shrink-0">
+                                  <span className={`inline-flex px-3.5 py-1.5 text-xs font-bold rounded-xl shadow-xs uppercase tracking-wide ${badgeStyle}`}>
+                                    สถานะการดำเนินการ
+                                  </span>
+                                </div>
+                              </div>
+                            );
+                          }
+                          return null;
+                        })()}
+
                         {/* Fields Grid */}
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0">
                           {allData?.headers.map((header, headIdx) => {
@@ -785,10 +748,24 @@ export default function App() {
 
                             const isStatus = labelText.toLowerCase().includes('ผลการดำเนินการ') || labelText.toLowerCase().includes('result') || labelText.toLowerCase().includes('status') || labelText.includes('สถานะ');
 
+                            let containerStyle = "border-b border-r border-slate-100 p-4.5 flex flex-col justify-between hover:bg-slate-50/50 transition-colors";
+                            if (isStatus) {
+                              const isDuplicate = cellVal.includes('⚠️ เลขต่างด้าวซ้ำ') || cellVal.includes('ซ้ำ');
+                              const isNew = cellVal.includes('✅ ข้อมูลใหม่') || cellVal.includes('ใหม่') || cellVal.includes('สำเร็จ');
+                              
+                              if (isDuplicate) {
+                                containerStyle = "border-b border-r border-red-100 p-4.5 flex flex-col justify-between bg-red-50/30 hover:bg-red-50/50 transition-colors border-l-4 border-l-red-500 col-span-1 md:col-span-2 lg:col-span-3";
+                              } else if (isNew) {
+                                containerStyle = "border-b border-r border-emerald-100 p-4.5 flex flex-col justify-between bg-emerald-50/20 hover:bg-emerald-50/40 transition-colors border-l-4 border-l-emerald-500 col-span-1 md:col-span-2 lg:col-span-3";
+                              } else {
+                                containerStyle = "border-b border-r border-blue-100 p-4.5 flex flex-col justify-between bg-blue-50/20 hover:bg-blue-50/40 transition-colors border-l-4 border-l-blue-500 col-span-1 md:col-span-2 lg:col-span-3";
+                              }
+                            }
+
                             return (
                               <div 
                                 key={headIdx} 
-                                className="border-b border-r border-slate-100 p-4 flex flex-col justify-between hover:bg-slate-50/50 transition-colors"
+                                className={containerStyle}
                               >
                                 <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">
                                   {labelText}
@@ -796,22 +773,23 @@ export default function App() {
                                 <div className="mt-1.5">
                                   {isStatus ? (
                                     cellVal.includes('⚠️ เลขต่างด้าวซ้ำ') ? (
-                                      <span className="inline-flex items-center gap-1.5 bg-red-100 text-red-700 px-3 py-1 rounded-lg border border-red-200 text-xs font-bold shadow-xs">
+                                      <span className="inline-flex items-center gap-1.5 bg-red-100 text-red-700 px-3 py-1 rounded-xl border border-red-200 text-xs font-black shadow-xs">
                                         <AlertTriangle className="w-3.5 h-3.5" />
                                         {cellVal}
                                       </span>
                                     ) : cellVal.includes('✅ ข้อมูลใหม่') ? (
-                                      <span className="inline-flex items-center gap-1.5 bg-emerald-100 text-emerald-800 px-3 py-1 rounded-lg border border-emerald-200 text-xs font-bold shadow-xs">
+                                      <span className="inline-flex items-center gap-1.5 bg-emerald-100 text-emerald-800 px-3 py-1 rounded-xl border border-emerald-200 text-xs font-black shadow-xs">
                                         <CheckCircle2 className="w-3.5 h-3.5" />
                                         {cellVal}
                                       </span>
                                     ) : (
-                                      <span className="text-xs font-bold text-blue-900 bg-blue-50 border border-blue-100 rounded-lg px-2.5 py-1">
+                                      <span className="inline-flex items-center gap-1.5 bg-blue-50 text-blue-900 border border-blue-200 rounded-xl px-3 py-1 text-xs font-black shadow-xs">
+                                        <Info className="w-3.5 h-3.5" />
                                         {cellVal}
                                       </span>
                                     )
                                   ) : (
-                                    <span className={`text-xs font-medium ${isHighlightField(labelText) ? 'text-slate-900 font-bold' : 'text-slate-700'}`}>
+                                    <span className={`text-xs font-semibold ${isHighlightField(labelText) ? 'text-slate-900 font-extrabold text-sm' : 'text-slate-700'}`}>
                                       {cellVal}
                                     </span>
                                   )}
@@ -911,24 +889,32 @@ export default function App() {
                                     }
 
                                     const isHighlight = isHighlightField(headerLabel);
+                                    const isStatusField = headerLabel.toLowerCase().includes('ผลการดำเนินการ') || headerLabel.toLowerCase().includes('result') || headerLabel.toLowerCase().includes('status') || headerLabel.includes('สถานะ');
 
                                     return (
                                       <td 
                                         key={cellIdx}
                                         className="px-5 py-3.5 text-xs font-medium whitespace-nowrap align-middle"
                                       >
-                                        {cellVal.includes('⚠️ เลขต่างด้าวซ้ำ') ? (
-                                          <span className="inline-flex items-center gap-1 bg-red-100 text-red-700 px-2.5 py-0.5 rounded-md border border-red-200 font-bold shadow-xs">
-                                            <AlertTriangle className="w-3.5 h-3.5" />
-                                            {cellVal}
-                                          </span>
-                                        ) : cellVal.includes('✅ ข้อมูลใหม่') ? (
-                                          <span className="inline-flex items-center gap-1 bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded-md border border-emerald-200 font-bold shadow-xs">
-                                            <CheckCircle2 className="w-3.5 h-3.5" />
-                                            {cellVal}
-                                          </span>
+                                        {isStatusField ? (
+                                          cellVal.includes('⚠️ เลขต่างด้าวซ้ำ') ? (
+                                            <span className="inline-flex items-center gap-1.5 bg-red-100 text-red-700 px-3 py-1.5 rounded-full border border-red-200 font-black shadow-xs">
+                                              <AlertTriangle className="w-3.5 h-3.5" />
+                                              {cellVal}
+                                            </span>
+                                          ) : cellVal.includes('✅ ข้อมูลใหม่') ? (
+                                            <span className="inline-flex items-center gap-1.5 bg-emerald-100 text-emerald-800 px-3 py-1.5 rounded-full border border-emerald-200 font-black shadow-xs animate-pulse">
+                                              <CheckCircle2 className="w-3.5 h-3.5" />
+                                              {cellVal}
+                                            </span>
+                                          ) : (
+                                            <span className="inline-flex items-center gap-1.5 bg-blue-50 text-blue-950 px-3 py-1.5 rounded-full border border-blue-150 font-black shadow-xs">
+                                              <Info className="w-3.5 h-3.5" />
+                                              {cellVal}
+                                            </span>
+                                          )
                                         ) : (
-                                          <span className={isHighlight ? 'text-slate-900 font-bold' : 'text-slate-500'}>
+                                          <span className={isHighlight ? 'text-slate-900 font-extrabold text-xs' : 'text-slate-500 font-semibold'}>
                                             {cellVal}
                                           </span>
                                         )}
