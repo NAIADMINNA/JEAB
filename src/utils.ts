@@ -84,6 +84,23 @@ export function formatThaiDateTime(now: Date = new Date()): string {
   return `ข้อมูล ณ วันที่ ${day} ${month} ${year} เวลา ${hours}:${minutes}:${seconds} น.`;
 }
 
+export function getThaiDateTimeParts(now: Date = new Date()) {
+  const thaiMonths = [
+    'มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน',
+    'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'
+  ];
+  const day = now.getDate();
+  const month = thaiMonths[now.getMonth()];
+  const year = now.getFullYear() + 543;
+  const hours = String(now.getHours()).padStart(2, '0');
+  const minutes = String(now.getMinutes()).padStart(2, '0');
+  const seconds = String(now.getSeconds()).padStart(2, '0');
+  return {
+    date: `ข้อมูล ณ วันที่ ${day} ${month} ${year}`,
+    time: `เวลา ${hours}:${minutes}:${seconds} น.`
+  };
+}
+
 export function isHighlightField(label: string): boolean {
   const keys = ['ชื่อ', 'name', 'status', 'สถานะ', 'passport', 'หนังสือเดินทาง'];
   const lower = (label || '').toLowerCase();

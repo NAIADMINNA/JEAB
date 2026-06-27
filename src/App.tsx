@@ -28,6 +28,7 @@ import {
   normalizeId, 
   formatThaiDate, 
   formatThaiDateTime, 
+  getThaiDateTimeParts,
   isHighlightField 
 } from "./utils";
 
@@ -334,19 +335,20 @@ export default function App() {
             {/* Right side live status & actions */}
             <div className="flex flex-col sm:flex-row sm:items-center gap-4 self-start md:self-center">
               {/* Real-time Ticking Clock */}
-              <div className="flex items-center gap-2 text-white text-xs font-bold bg-slate-800/80 border border-slate-700/80 rounded-xl px-3.5 py-2 shadow-sm">
-                <Clock className="w-4 h-4 text-cyan-400 animate-pulse shrink-0" />
-                <span className="font-mono tracking-wide bg-gradient-to-r from-cyan-300 to-blue-200 bg-clip-text text-transparent">
-                  {formatThaiDateTime(currentTime)}
+              <div className="flex items-center gap-2.5 text-white text-xs font-bold bg-slate-900/90 backdrop-blur-md border border-cyan-500/30 rounded-xl px-4 py-2.5 shadow-[0_0_15px_rgba(34,211,238,0.15)] hover:border-cyan-400/50 hover:shadow-[0_0_20px_rgba(34,211,238,0.25)] transition-all duration-300">
+                <Clock className="w-4 h-4 text-cyan-400 animate-pulse shrink-0 drop-shadow-[0_0_8px_rgba(34,211,238,0.5)]" />
+                <span className="font-mono tracking-wide bg-gradient-to-r from-cyan-300 via-teal-200 to-white bg-clip-text text-transparent drop-shadow-sm font-black flex flex-wrap gap-x-2">
+                  <span>{getThaiDateTimeParts(currentTime).date}</span>
+                  <span className="whitespace-nowrap">{getThaiDateTimeParts(currentTime).time}</span>
                 </span>
               </div>
 
-              <div className="bg-slate-800/90 border border-slate-700 rounded-xl px-3.5 py-2 flex items-center gap-2.5 shadow-sm">
-                <span className="relative flex h-2 w-2">
+              <div className="bg-slate-900/95 backdrop-blur-md border border-emerald-500/30 rounded-xl px-4 py-2.5 flex items-center gap-2.5 shadow-[0_0_15px_rgba(16,185,129,0.1)] hover:border-emerald-400/50 hover:shadow-[0_0_20px_rgba(52,211,153,0.2)] transition-all duration-300">
+                <span className="relative flex h-2.5 w-2.5">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500 shadow-[0_0_8px_rgba(52,211,153,0.5)]"></span>
                 </span>
-                <span className="text-xs font-bold text-emerald-400">
+                <span className="text-xs font-black text-emerald-400 tracking-wide">
                   ฐานข้อมูลพร้อมใช้งาน
                 </span>
               </div>
@@ -369,7 +371,7 @@ export default function App() {
       </header>
 
       {/* MAIN LAYOUT */}
-      <main className="max-w-6xl w-full mx-auto px-4 sm:px-6 py-8 flex-grow flex flex-col gap-8 relative z-10">
+      <main className="max-w-6xl w-full mx-auto px-4 sm:px-6 py-4 flex-grow flex flex-col gap-6 relative z-10">
         
         {/* DUAL LOOKUP FORMS */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
@@ -581,38 +583,7 @@ export default function App() {
         <section className="w-full">
           <AnimatePresence mode="wait">
             
-            {/* INITIAL & IDLE GUIDE STATE */}
-            {!searchType && !isSearching && (
-              <motion.div 
-                key="idle"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                className="bg-gradient-to-r from-blue-50/70 via-indigo-50/30 to-emerald-50/40 border border-indigo-100 rounded-3xl p-6.5 shadow-md shadow-indigo-900/5 flex flex-col md:flex-row gap-6 items-start md:items-center relative overflow-hidden"
-              >
-                {/* Visual subtle glowing circles in guide state */}
-                <div className="absolute top-[-30%] right-[-10%] w-48 h-48 bg-indigo-200/20 rounded-full blur-2xl pointer-events-none"></div>
-                <div className="absolute bottom-[-30%] left-[-5%] w-48 h-48 bg-emerald-200/20 rounded-full blur-2xl pointer-events-none"></div>
 
-                <div className="w-12.5 h-12.5 rounded-2xl bg-gradient-to-br from-indigo-500 to-blue-600 text-white flex items-center justify-center shrink-0 shadow-lg shadow-indigo-500/30 relative">
-                  <Info className="w-6.5 h-6.5" />
-                </div>
-                <div className="flex-grow space-y-1.5 relative z-10">
-                  <h3 className="text-sm md:text-base font-black text-slate-950">ระบบตรวจสอบสถานะข้อมูลแรงงานต่างด้าว</h3>
-                  <div className="pt-2 flex flex-wrap gap-2 text-[11px]">
-                    <span className="bg-indigo-600/10 text-indigo-700 border border-indigo-200/50 px-3 py-1 rounded-full font-bold">
-                      🛡️ คัดกรองความผิดพลาดซ้ำซ้อนอัตโนมัติ
-                    </span>
-                    <span className="bg-blue-600/10 text-blue-700 border border-blue-200/50 px-3 py-1 rounded-full font-bold">
-                      📅 แสดงวันที่แบบพุทธศักราช (พ.ศ.)
-                    </span>
-                    <span className="bg-emerald-600/10 text-emerald-700 border border-emerald-200/50 px-3 py-1 rounded-full font-bold">
-                      📊 ส่งออกไฟล์ Excel
-                    </span>
-                  </div>
-                </div>
-              </motion.div>
-            )}
 
             {/* LOADING STATE WITH SHIMMER */}
             {isSearching && (
@@ -1054,7 +1025,7 @@ export default function App() {
       </main>
 
       {/* FOOTER */}
-      <footer className="bg-slate-900 text-slate-400 border-t border-slate-800 py-10 mt-12">
+      <footer className="bg-slate-900 text-slate-400 border-t border-slate-800 py-6 mt-6">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col md:flex-row items-center justify-between gap-6">
           
           <div className="text-center md:text-left space-y-1">
