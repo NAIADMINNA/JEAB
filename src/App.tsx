@@ -290,44 +290,44 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans selection:bg-blue-600 selection:text-white antialiased relative overflow-hidden">
+    <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans selection:bg-amber-500 selection:text-white antialiased relative overflow-hidden">
       
       {/* Ambient colorful background blobs */}
-      <div className="absolute top-[10%] left-[-15%] w-[600px] h-[600px] bg-gradient-to-tr from-blue-400/10 via-indigo-400/5 to-transparent rounded-full blur-[140px] pointer-events-none"></div>
-      <div className="absolute bottom-[20%] right-[-15%] w-[600px] h-[600px] bg-gradient-to-br from-emerald-400/10 via-teal-400/5 to-transparent rounded-full blur-[140px] pointer-events-none"></div>
-      <div className="absolute top-[50%] left-[30%] w-[500px] h-[500px] bg-gradient-to-r from-pink-300/5 to-amber-300/5 rounded-full blur-[120px] pointer-events-none"></div>
+      <div className="absolute top-[10%] left-[-15%] w-[600px] h-[600px] bg-gradient-to-tr from-blue-600/5 via-indigo-600/5 to-transparent rounded-full blur-[140px] pointer-events-none"></div>
+      <div className="absolute bottom-[20%] right-[-15%] w-[600px] h-[600px] bg-gradient-to-br from-amber-500/5 via-yellow-500/5 to-transparent rounded-full blur-[140px] pointer-events-none"></div>
+      <div className="absolute top-[50%] left-[30%] w-[500px] h-[500px] bg-gradient-to-r from-blue-500/5 to-amber-500/5 rounded-full blur-[120px] pointer-events-none"></div>
 
       {/* ENTERPRISE GLOW HEADER */}
-      <header className="sticky top-0 z-40 bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 shadow-xl overflow-hidden relative">
+      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md shadow-md overflow-hidden relative border-b border-amber-500/20">
         {/* Abstract vector decor circles */}
-        <div className="absolute top-0 right-0 w-80 h-40 bg-blue-500/15 rounded-full blur-3xl pointer-events-none"></div>
-        <div className="absolute bottom-0 left-1/4 w-96 h-20 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none"></div>
+        <div className="absolute top-0 right-0 w-80 h-40 bg-amber-500/5 rounded-full blur-3xl pointer-events-none"></div>
+        <div className="absolute bottom-0 left-1/4 w-96 h-20 bg-blue-500/5 rounded-full blur-2xl pointer-events-none"></div>
         
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4.5 relative z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-10 relative z-10">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             
             {/* Logo area */}
             <div className="flex items-center gap-3.5">
-              <div className="w-12.5 h-12.5 rounded-2xl bg-gradient-to-br from-blue-500 via-indigo-600 to-purple-600 flex items-center justify-center shrink-0 shadow-xl shadow-indigo-500/30 border border-blue-400/40 relative">
-                <ShieldCheck className="w-6.5 h-6.5 text-white" />
+              <div className="w-12.5 h-12.5 rounded-2xl bg-gradient-to-br from-amber-400 via-amber-500 to-amber-600 flex items-center justify-center shrink-0 shadow-lg shadow-amber-500/20 border border-amber-300/40 relative">
+                <ShieldCheck className="w-6.5 h-6.5 text-slate-950" />
                 <span className="absolute -top-1 -right-1 flex h-4 w-4">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-4 w-4 bg-emerald-500 border-2 border-slate-900"></span>
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-4 w-4 bg-amber-500 border-2 border-white"></span>
                 </span>
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <h1 className="text-xl md:text-2xl font-black text-white tracking-tight leading-tight bg-gradient-to-r from-white via-slate-100 to-blue-200 bg-clip-text text-transparent">
+                  <h1 className="text-xl md:text-2xl font-black text-slate-900 tracking-tight leading-tight">
                     ระบบตรวจสอบสถานะข้อมูลแรงงานต่างด้าว
                   </h1>
-                  <span className="hidden sm:inline-block px-2.5 py-0.5 rounded-full text-[10px] bg-blue-500/25 border border-blue-400/40 text-blue-300 font-bold uppercase tracking-wider">
+                  <span className="hidden sm:inline-block px-2.5 py-0.5 rounded-full text-[10px] bg-amber-500/10 border border-amber-400/30 text-amber-700 font-bold uppercase tracking-wider">
                     eWorkPermit
                   </span>
                 </div>
-                <p className="text-xs text-slate-300 font-medium mt-1 tracking-wide flex items-center gap-1.5">
-                  <span className="text-blue-300 font-bold">eWorkPermit Verification & Data Matching Platform</span>
-                  <span className="text-blue-400">•</span>
-                  <span className="text-emerald-400 font-bold">สำนักบริหารแรงงานต่างด้าว</span>
+                <p className="text-xs text-slate-500 font-medium mt-1 tracking-wide flex items-center gap-1.5">
+                  <span className="text-amber-700 font-bold">eWorkPermit Verification & Data Matching Platform</span>
+                  <span className="text-slate-400">•</span>
+                  <span className="text-amber-600 font-bold">สำนักบริหารแรงงานต่างด้าว</span>
                 </p>
               </div>
             </div>
@@ -335,20 +335,20 @@ export default function App() {
             {/* Right side live status & actions */}
             <div className="flex flex-col sm:flex-row sm:items-center gap-4 self-start md:self-center">
               {/* Real-time Ticking Clock */}
-              <div className="flex items-center gap-2.5 text-white text-xs font-bold bg-slate-900/90 backdrop-blur-md border border-cyan-500/30 rounded-xl px-4 py-2.5 shadow-[0_0_15px_rgba(34,211,238,0.15)] hover:border-cyan-400/50 hover:shadow-[0_0_20px_rgba(34,211,238,0.25)] transition-all duration-300">
-                <Clock className="w-4 h-4 text-cyan-400 animate-pulse shrink-0 drop-shadow-[0_0_8px_rgba(34,211,238,0.5)]" />
-                <span className="font-mono tracking-wide bg-gradient-to-r from-cyan-300 via-teal-200 to-white bg-clip-text text-transparent drop-shadow-sm font-black flex flex-wrap gap-x-2">
-                  <span>{getThaiDateTimeParts(currentTime).date}</span>
-                  <span className="whitespace-nowrap">{getThaiDateTimeParts(currentTime).time}</span>
+              <div className="flex items-center gap-2.5 text-slate-700 text-xs font-bold bg-amber-50/70 border border-amber-200/60 rounded-xl px-4 py-2.5 shadow-sm hover:border-amber-300 hover:bg-amber-50 transition-all duration-300">
+                <Clock className="w-4 h-4 text-amber-600 animate-pulse shrink-0" />
+                <span className="font-mono tracking-wide text-slate-800 font-black flex flex-wrap gap-x-2">
+                  <span className="text-slate-600">{getThaiDateTimeParts(currentTime).date}</span>
+                  <span className="whitespace-nowrap text-amber-700">{getThaiDateTimeParts(currentTime).time}</span>
                 </span>
               </div>
 
-              <div className="bg-slate-900/95 backdrop-blur-md border border-emerald-500/30 rounded-xl px-4 py-2.5 flex items-center gap-2.5 shadow-[0_0_15px_rgba(16,185,129,0.1)] hover:border-emerald-400/50 hover:shadow-[0_0_20px_rgba(52,211,153,0.2)] transition-all duration-300">
+              <div className="bg-emerald-50/80 border border-emerald-200/60 rounded-xl px-4 py-2.5 flex items-center gap-2.5 shadow-sm hover:border-emerald-300 transition-all duration-300">
                 <span className="relative flex h-2.5 w-2.5">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500 shadow-[0_0_8px_rgba(52,211,153,0.5)]"></span>
+                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
                 </span>
-                <span className="text-xs font-black text-emerald-400 tracking-wide">
+                <span className="text-xs font-black text-emerald-700 tracking-wide">
                   ฐานข้อมูลพร้อมใช้งาน
                 </span>
               </div>
@@ -367,19 +367,19 @@ export default function App() {
         </div>
         
         {/* Dynamic color stripe at bottom of header */}
-        <div className="h-[3px] bg-gradient-to-r from-blue-500 via-indigo-500 via-purple-500 via-pink-500 to-emerald-500 w-full shrink-0"></div>
+        <div className="h-[3px] bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-600 w-full shrink-0"></div>
       </header>
 
       {/* MAIN LAYOUT */}
-      <main className="max-w-6xl w-full mx-auto px-4 sm:px-6 py-4 flex-grow flex flex-col gap-6 relative z-10">
+      <main className="max-w-7xl w-full mx-auto px-4 sm:px-6 py-4 flex-grow flex flex-col gap-6 relative z-10">
         
         {/* DUAL LOOKUP FORMS */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
           
           {/* INDIVIDUAL FORM (BLUE CARD) */}
-          <div className="relative rounded-3xl bg-white border border-slate-200/80 shadow-md shadow-slate-100 overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/5 hover:border-blue-400/60 flex flex-col justify-between min-h-[320px]">
+          <div className="relative rounded-3xl bg-white border border-slate-200/80 shadow-md shadow-slate-100 overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-[#1e3a8a]/5 hover:border-blue-400/60 flex flex-col justify-between min-h-[320px]">
             {/* Top accent color stripe */}
-            <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-blue-400 via-indigo-500 to-blue-600"></div>
+            <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-[#1e3a8a] via-[#2563eb] to-[#1e40af]"></div>
 
             {/* Form Dim Lock Overlay */}
             {activeForm === 'employer' && (
@@ -402,12 +402,12 @@ export default function App() {
 
             <div className="p-6 pt-7">
               <div className="flex items-center gap-3.5 mb-4 pb-3 border-b border-slate-100">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white flex items-center justify-center shrink-0 shadow-md shadow-blue-500/20">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#1e3a8a] to-[#2563eb] text-white flex items-center justify-center shrink-0 shadow-md shadow-blue-500/20">
                   <UserCheck className="w-5.5 h-5.5" />
                 </div>
                 <div>
                   <h2 className="text-base font-extrabold text-slate-900">ค้นหาข้อมูลตามรายบุคคล</h2>
-                  <p className="text-[11px] text-blue-600 font-bold mt-0.5">Alien worker status lookup by individual ID</p>
+                  <p className="text-[11px] text-[#1e3a8a] font-bold mt-0.5">Alien worker status lookup by individual ID</p>
                 </div>
               </div>
 
@@ -429,9 +429,9 @@ export default function App() {
                       value={alienId}
                       onChange={(e) => handleAlienIdChange(e.target.value)}
                       placeholder="ระบุตัวเลข 13 หลัก เช่น 0xxxxxxxxxxxx"
-                      className="w-full rounded-2xl border-2 border-slate-200 bg-slate-50/50 px-4 py-3.5 pr-11 text-sm tracking-widest text-slate-900 transition-all focus:outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-100 placeholder:text-slate-400 placeholder:tracking-normal font-mono font-bold"
+                      className="w-full rounded-2xl border-2 border-slate-200 bg-slate-50/50 px-4 py-3.5 pr-11 text-sm tracking-widest text-slate-900 transition-all focus:outline-none focus:bg-white focus:border-[#1e3a8a] focus:ring-4 focus:ring-blue-100/50 placeholder:text-slate-400 placeholder:tracking-normal font-mono font-bold"
                     />
-                    <div className="absolute inset-y-0 right-4 flex items-center text-blue-500">
+                    <div className="absolute inset-y-0 right-4 flex items-center text-[#1e3a8a]">
                       <IdCard className="w-5 h-5" />
                     </div>
                   </div>
@@ -455,8 +455,8 @@ export default function App() {
                     disabled={alienId.length !== 13 || isSearching}
                     className={`inline-flex items-center justify-center gap-1.5 rounded-2xl px-4 py-3.5 text-xs font-bold text-white transition-all shadow-md ${
                       alienId.length === 13 && !isSearching
-                        ? 'bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 hover:from-blue-750 hover:to-indigo-750 hover:shadow-lg hover:shadow-blue-500/25 active:scale-[0.98]' 
-                        : 'bg-blue-900/40 cursor-not-allowed shadow-none'
+                        ? 'bg-gradient-to-r from-[#1e3a8a] via-[#2563eb] to-[#1e40af] hover:from-[#1d4ed8] hover:to-[#1e40af] hover:shadow-lg hover:shadow-blue-500/25 active:scale-[0.98]' 
+                        : 'bg-[#1e3a8a]/40 cursor-not-allowed shadow-none'
                     }`}
                   >
                     <Search className="w-4 h-4" /> ตรวจสอบข้อมูล
@@ -466,15 +466,15 @@ export default function App() {
             </div>
 
             <div className="bg-slate-50/80 border-t border-slate-100 py-3.5 px-6 flex items-center justify-between text-[11px] text-slate-400 font-bold">
-              <span className="text-blue-600">ประเภทข้อมูล: รายบุคคล (Individual)</span>
+              <span className="text-[#1e3a8a]">ประเภทข้อมูล: รายบุคคล (Individual)</span>
               <span>เลขประจำตัวแรงงานต่างด้าว</span>
             </div>
           </div>
 
-          {/* EMPLOYER FORM (GREEN CARD) */}
-          <div className="relative rounded-3xl bg-white border border-slate-200/80 shadow-md shadow-slate-100 overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-emerald-500/5 hover:border-emerald-400/60 flex flex-col justify-between min-h-[320px]">
+          {/* EMPLOYER FORM (GOLD CARD) */}
+          <div className="relative rounded-3xl bg-white border border-slate-200/80 shadow-md shadow-slate-100 overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-amber-500/5 hover:border-amber-400/60 flex flex-col justify-between min-h-[320px]">
             {/* Top accent color stripe */}
-            <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-emerald-400 via-teal-500 to-emerald-600"></div>
+            <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700"></div>
 
             {/* Form Dim Lock Overlay */}
             {activeForm === 'id' && (
@@ -497,12 +497,12 @@ export default function App() {
 
             <div className="p-6 pt-7">
               <div className="flex items-center gap-3.5 mb-4 pb-3 border-b border-slate-100">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white flex items-center justify-center shrink-0 shadow-md shadow-emerald-500/20">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 text-white flex items-center justify-center shrink-0 shadow-md shadow-amber-500/20">
                   <Building2 className="w-5.5 h-5.5" />
                 </div>
                 <div>
                   <h2 className="text-base font-extrabold text-slate-900">ค้นหาข้อมูลตามสถานประกอบการ</h2>
-                  <p className="text-[11px] text-emerald-600 font-bold mt-0.5">Company or Employer master search</p>
+                  <p className="text-[11px] text-amber-700 font-bold mt-0.5">Company or Employer master search</p>
                 </div>
               </div>
 
@@ -524,9 +524,9 @@ export default function App() {
                       value={employerNumber}
                       onChange={(e) => handleEmployerIdChange(e.target.value)}
                       placeholder="ระบุตัวเลข 13 หลัก เช่น 0xxxxxxxxxxxx"
-                      className="w-full rounded-2xl border-2 border-slate-200 bg-slate-50/50 px-4 py-3.5 pr-11 text-sm tracking-widest text-slate-900 transition-all focus:outline-none focus:bg-white focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 placeholder:text-slate-400 placeholder:tracking-normal font-mono font-bold"
+                      className="w-full rounded-2xl border-2 border-slate-200 bg-slate-50/50 px-4 py-3.5 pr-11 text-sm tracking-widest text-slate-900 transition-all focus:outline-none focus:bg-white focus:border-amber-500 focus:ring-4 focus:ring-amber-100/50 placeholder:text-slate-400 placeholder:tracking-normal font-mono font-bold"
                     />
-                    <div className="absolute inset-y-0 right-4 flex items-center text-emerald-600">
+                    <div className="absolute inset-y-0 right-4 flex items-center text-amber-600">
                       <Briefcase className="w-5 h-5" />
                     </div>
                   </div>
@@ -550,8 +550,8 @@ export default function App() {
                     disabled={employerNumber.length !== 13 || isSearching}
                     className={`inline-flex items-center justify-center gap-1.5 rounded-2xl px-4 py-3.5 text-xs font-bold text-white transition-all shadow-md ${
                       employerNumber.length === 13 && !isSearching
-                        ? 'bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-700 hover:to-teal-700 hover:shadow-lg hover:shadow-emerald-500/25 active:scale-[0.98]' 
-                        : 'bg-emerald-900/40 cursor-not-allowed shadow-none'
+                        ? 'bg-gradient-to-r from-amber-600 via-amber-500 to-amber-700 hover:from-amber-700 hover:to-amber-600 hover:shadow-lg hover:shadow-amber-500/25 active:scale-[0.98]' 
+                        : 'bg-amber-950/40 cursor-not-allowed shadow-none'
                     }`}
                   >
                     <Search className="w-4 h-4" /> ตรวจสอบข้อมูล
@@ -560,7 +560,7 @@ export default function App() {
               </form>
             </div>
 
-            <div className="bg-slate-50/80 border-t border-slate-100 py-3.5 px-6 flex items-center justify-between text-[11px] text-emerald-600 font-bold">
+            <div className="bg-slate-50/80 border-t border-slate-100 py-3.5 px-6 flex items-center justify-between text-[11px] text-amber-700 font-bold">
               <span>ประเภทข้อมูล: นายจ้าง (Employer)</span>
             </div>
           </div>
@@ -592,11 +592,11 @@ export default function App() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="bg-white border-2 border-indigo-100 rounded-3xl p-10 shadow-lg flex flex-col items-center justify-center text-center gap-5"
+                className="bg-white border-2 border-indigo-100/30 rounded-3xl p-10 shadow-lg flex flex-col items-center justify-center text-center gap-5"
               >
                 <div className="relative w-16 h-16">
                   <div className="absolute inset-0 rounded-full border-4 border-slate-100"></div>
-                  <div className="absolute inset-0 rounded-full border-4 border-t-blue-600 border-r-indigo-500 border-b-purple-600 animate-spin"></div>
+                  <div className="absolute inset-0 rounded-full border-4 border-t-amber-500 border-r-blue-900 border-b-amber-600 animate-spin"></div>
                 </div>
                 <div>
                   <h3 className="text-base font-black text-slate-950">กำลังสแกนโครงข่ายคลาวด์ eWorkPermit...</h3>
@@ -616,16 +616,16 @@ export default function App() {
               >
                 
                 {/* Result Control Bar */}
-                <div className="bg-gradient-to-r from-slate-900 to-blue-950 border border-blue-900/60 rounded-3xl px-6 py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xl">
+                <div className="bg-white border border-amber-500/20 rounded-3xl px-6 py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-md">
                   <div className="flex items-center gap-3.5">
-                    <div className="w-11 h-11 rounded-xl bg-blue-500/20 border border-blue-400/40 text-blue-200 flex items-center justify-center shrink-0">
+                    <div className="w-11 h-11 rounded-xl bg-amber-50 border border-amber-200 text-amber-600 flex items-center justify-center shrink-0">
                       <FileText className="w-5.5 h-5.5" />
                     </div>
                     <div>
-                      <h2 className="text-sm md:text-base font-black text-white tracking-tight leading-tight">
+                      <h2 className="text-sm md:text-base font-black text-slate-900 tracking-tight leading-tight">
                         {searchType === 'id' ? 'ผลการตรวจสอบข้อมูลรายบุคคล' : 'รายการแรงงานในสถานประกอบการ'}
                       </h2>
-                      <p className="text-xs text-slate-300 font-semibold mt-0.5">
+                      <p className="text-xs text-slate-500 font-semibold mt-0.5">
                         {searchType === 'id' 
                           ? `หมายเลขแรงงาน: ${alienId}` 
                           : `รหัสบริษัทนายจ้าง: ${employerNumber} (พบทั้งหมด ${searchResult.length} รายการ)`
@@ -639,7 +639,7 @@ export default function App() {
                     {searchResult.length > 0 && (
                       <button
                         onClick={handleExportExcel}
-                        className="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 hover:from-emerald-600 hover:to-teal-600 hover:shadow-lg hover:shadow-emerald-500/20 text-white rounded-2xl px-5 py-2.5 text-xs font-bold transition-all active:scale-[0.98]"
+                        className="inline-flex items-center gap-2 bg-gradient-to-r from-amber-500 via-yellow-500 to-amber-600 hover:from-amber-600 hover:to-yellow-600 hover:shadow-lg hover:shadow-amber-500/20 text-white rounded-2xl px-5 py-2.5 text-xs font-bold transition-all active:scale-[0.98]"
                       >
                         <Download className="w-4 h-4" /> ส่งออกเป็นไฟล์ Excel
                       </button>
@@ -647,7 +647,7 @@ export default function App() {
                     
                     <button
                       onClick={() => handleReset(searchType)}
-                      className="inline-flex items-center gap-1.5 bg-white/10 hover:bg-white/20 border border-white/15 text-white rounded-2xl px-5 py-2.5 text-xs font-bold transition-all"
+                      className="inline-flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-750 rounded-2xl px-5 py-2.5 text-xs font-bold transition-all"
                     >
                       <RotateCcw className="w-3.5 h-3.5" /> รีเซ็ตการค้นหา
                     </button>
@@ -675,15 +675,15 @@ export default function App() {
                     {searchResult.map((record, recIdx) => (
                       <div 
                         key={recIdx} 
-                        className="bg-white border border-slate-200/80 rounded-3xl overflow-hidden shadow-md hover:shadow-xl hover:border-blue-400/50 transition-all duration-300 relative"
+                        className="bg-white border border-slate-200/80 rounded-3xl overflow-hidden shadow-md hover:shadow-xl hover:border-amber-400/50 transition-all duration-300 relative"
                       >
                         {/* Decorative colorful side bar */}
-                        <div className="absolute left-0 top-0 bottom-0 w-2 bg-gradient-to-b from-blue-500 via-indigo-500 to-purple-600"></div>
+                        <div className="absolute left-0 top-0 bottom-0 w-2 bg-gradient-to-b from-amber-500 via-amber-600 to-blue-900"></div>
 
                         {/* Record Title Header */}
                         <div className="bg-slate-50/80 border-b border-slate-100 py-4.5 px-7 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                          <span className="text-xs font-black text-blue-900 tracking-wide flex items-center gap-2">
-                            <History className="w-4.5 h-4.5 text-blue-600" /> 
+                          <span className="text-xs font-black text-slate-800 tracking-wide flex items-center gap-2">
+                            <History className="w-4.5 h-4.5 text-amber-600" /> 
                             ระเบียนข้อมูลที่ {recIdx + 1}
                           </span>
                           <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 border-2 border-emerald-200 bg-emerald-50 text-emerald-800 text-[11px] font-extrabold shadow-sm">
@@ -706,8 +706,8 @@ export default function App() {
                             const isDuplicate = cellVal.includes('⚠️ เลขต่างด้าวซ้ำ') || cellVal.includes('ซ้ำ');
                             const isNew = cellVal.includes('✅ ข้อมูลใหม่') || cellVal.includes('ใหม่') || cellVal.includes('สำเร็จ');
                             
-                            let alertBg = "bg-gradient-to-r from-blue-50 to-indigo-50/40 border-blue-200/60 text-blue-900";
-                            let icon = <Info className="w-5.5 h-5.5 text-blue-600 shrink-0" />;
+                            let alertBg = "bg-gradient-to-r from-blue-50/60 to-indigo-50/20 border-blue-200/40 text-[#1e3a8a]";
+                            let icon = <Info className="w-5.5 h-5.5 text-[#2563eb] shrink-0" />;
                             let badgeStyle = "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md shadow-blue-500/20";
                             let descriptionText = "ระบบได้ทำการตรวจสอบข้อมูลเบื้องต้นเรียบร้อยแล้ว";
 
@@ -847,7 +847,7 @@ export default function App() {
                           value={tableFilter}
                           onChange={(e) => { setTableFilter(e.target.value); setCurrentPage(1); }}
                           placeholder="พิมพ์เพื่อกรองตาม ชื่อ, เลขต่างด้าว, สถานะ..."
-                          className="w-full text-xs bg-white border border-slate-300 rounded-xl px-3 py-2.5 pl-8 focus:outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-50"
+                          className="w-full text-xs bg-white border border-slate-300 rounded-xl px-3 py-2.5 pl-8 focus:outline-none focus:border-amber-500 focus:ring-4 focus:ring-amber-50"
                         />
                         <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" />
                         {tableFilter && (
@@ -1025,20 +1025,20 @@ export default function App() {
       </main>
 
       {/* FOOTER */}
-      <footer className="bg-slate-900 text-slate-400 border-t border-slate-800 py-6 mt-6">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col md:flex-row items-center justify-between gap-6">
+      <footer className="bg-slate-100 text-slate-600 border-t border-slate-250 py-6 mt-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col md:flex-row items-center justify-between gap-6">
           
           <div className="text-center md:text-left space-y-1">
           </div>
 
           <div className="flex flex-col items-center md:items-end gap-2 text-[10px] text-slate-500">
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1.5 font-bold">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
               <span>Secure SSL Connection</span>
-              <span className="text-slate-700">|</span>
+              <span className="text-slate-300">|</span>
               <span>Cloud SQL & Sheets Synced</span>
             </div>
-            <p>© {new Date().getFullYear()} eWorkPermit Data Verification Services.</p>
+            <p className="font-medium">© {new Date().getFullYear()} eWorkPermit Data Verification Services.</p>
           </div>
 
         </div>
